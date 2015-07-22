@@ -77,8 +77,22 @@ try {
     );
     $dbManager->get('Facebooks')->insert($values_facebooks);
 
+    // get music data
+    $response_music = $fb->get('/me/music?limit=1000');
+    $response_music_decodedBody = $response_music->getDecodedBody();
+    $music_lists = $response_music_decodedBody['data'];
+    if(! isset($music_lists) || ! is_array($music_lists) || count($music_lists) === 0) {
+        // commit
         $dbManager->rollBack();
 //        $dbManager->commit();
+
+        // redirect to list page
+        $scheme = 'http';
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            $scheme = 'https';
+        }
+        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+        exit;
     }
 
     // commit
