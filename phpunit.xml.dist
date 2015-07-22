@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        bootstrap="phpunit.bootstrap.php"
+        processIsolation="false"
+        verbose="true"
+        strict="false"
+        colors="true">
+    <testsuites>
+        <testsuite name="PHPUnit">
+            <!-- テストケースがあるディレクトリを列挙する -->
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+<!--     <logging> -->
+        <!-- コードカバレッジ率 -->
+<!--         <log -->
+<!--                 type="coverage-html" -->
+<!--                 target="metrics/coverage" -->
+<!--                 charset="UTF-8" -->
+<!--                 yui="true" -->
+<!--                 highlight="false" -->
+<!--                 lowUpperBound="35" -->
+<!--                 highLowerBound="70" /> -->
+        <!-- <log type="coverage-text" target="php://stdout" lowUpperBound="35" highLowerBound="70" /> -->
+        <!-- 上行をアンコメントアウトするとカバレッジ率がプロンプトにも表示される -->
+<!--     </logging> -->
+<!--  -->
+<!--     <filter> -->
+        <!-- コードカバレッジ率を計測する対象の指定 -->
+<!--         <whitelist> -->
+<!--             <directory suffix=".php">src</directory> -->
+            <!-- <file>/path/to/file</file> -->
+<!--             <exclude> -->
+<!--                 <file>public/index.php</file> -->
+<!--             </exclude> -->
+<!--         </whitelist> -->
+        <!-- コードカバレッジ測定対象から除外 -->
+<!--         <blacklist> -->
+<!--             <directory suffix=".php" group="PHPUNIT">vendor</directory> -->
+<!--         </blacklist> -->
+<!--     </filter> -->
+<!--     <listeners> -->
+        <!-- mockery統合のため必要 -->
+<!--         <listener class="\Mockery\Adapter\Phpunit\TestListener" file="Vendor/mockery/mockery/library/Mockery/Adapter/Phpunit/TestListener.php" /> -->
+<!--     </listeners> -->
+</phpunit>
