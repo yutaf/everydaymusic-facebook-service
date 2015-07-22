@@ -87,17 +87,38 @@ try {
 
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
-    echo 'Graph returned an error: ' . $e->getMessage();
-
-    // code : message
-    // 100 : This authorization code has been used.
-
+    $message = 'Graph returned an error: ' . $e->getMessage();
+    printErrorPage($message);
     exit;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
     // When validation fails or other local issues
-    echo 'Facebook SDK returned an error: ' . $e->getMessage();
+    $message = 'Facebook SDK returned an error: ' . $e->getMessage();
+    printErrorPage($message);
     exit;
 } catch(PDOException $e) {
-    echo 'Database error: ' . $e->getMessage();
+    $message = 'Database error: ' . $e->getMessage();
+    printErrorPage($message);
     exit;
+} catch(Exception $e) {
+    $message = 'Error: ' . $e->getMessage();
+    printErrorPage($message);
+    exit;
+}
+
+function printErrorPage($message)
+{
+    echo <<<EOL
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<p>{$message}</p>
+<p><a href="/login">back</a></p>
+</body>
+</html>
+EOL;
+
 }
