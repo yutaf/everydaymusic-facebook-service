@@ -12,49 +12,78 @@ $fb = new Facebook\Facebook([
 $helper = $fb->getJavaScriptHelper();
 try {
     $accessToken = $helper->getAccessToken();
-    if (isset($accessToken)) {
-        // Logged in
-        $fb->setDefaultAccessToken($accessToken);
-        $response_user = $fb->get('/me?fields=id,name,email,first_name,last_name,gender,locale,timezone');
-        $response_user_decodedBody = $response_user->getDecodedBody();
-        $response_music = $fb->get('/me/music?limit=1000');
-        $response_music_decodedBody = $response_music->getDecodedBody();
-        //TODO email address が登録されていない時の処理
-        $datetime_now = date('Y-m-d H:i:s');
+    if(! isset($accessToken)) {
+        // redirect to login page
+        $scheme = 'http';
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            $scheme = 'https';
+        }
+        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/login', true, 302);
+        exit;
+    }
 
-        $dbManager = new DbManager();
-        $dbManager->connect($_ENV);
-        $dbManager->beginTransaction();
+    // Logged in
+    $fb->setDefaultAccessToken($accessToken);
+    // get user profile
+    $response_user = $fb->get('/me?fields=id,name,email,first_name,last_name,gender,locale,timezone');
+    $response_user_decodedBody = $response_user->getDecodedBody();
+    $facebook_user_id = $response_user_decodedBody['id'];
 
-        $values_users = array(
-            'email' => $response_user_decodedBody['email'],
-            'name' => $response_user_decodedBody['name'],
-            'first_name' => $response_user_decodedBody['first_name'],
-            'last_name' => $response_user_decodedBody['last_name'],
-            'gender' => $response_user_decodedBody['gender'],
-            'locale' => $response_user_decodedBody['locale'],
-            'timezone' => $response_user_decodedBody['timezone'],
-            'fetch_cnt' => 1,
-            'delivery_time' => '08:00:00',
-            'delivery_interval' => '24:00:00',
-            'is_active' => true,
-            'created_at' => $datetime_now,
-            'updated_at' => $datetime_now,
-        );
-        $dbManager->get('Users')->insert($values_users);
-        $user_id = $dbManager->getLastInsertId();
+    // db
+    $dbManager = new DbManager();
+    $dbManager->connect($_ENV);
 
-        $values_facebooks = array(
-            'user_id' => $user_id,
-            'facebook_user_id' => $response_user_decodedBody['id'],
-            'created_at' => $datetime_now,
-            'updated_at' => $datetime_now,
-        );
-        $dbManager->get('Facebooks')->insert($values_facebooks);
+    // check if facebook_user_id is registered
+    $facebooks_row = $dbManager->get('Facebooks')->fetchByFacebookUserId($facebook_user_id);
+    if($facebooks_row) {
+        // redirect to list page
+        $scheme = 'http';
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            $scheme = 'https';
+        }
+        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+        exit;
+    }
+
+    // transaction
+    $dbManager->beginTransaction();
+
+    //TODO email address が登録されていない時の処理
+    $datetime_now = date('Y-m-d H:i:s');
+
+    $values_users = array(
+        'email' => $response_user_decodedBody['email'],
+        'name' => $response_user_decodedBody['name'],
+        'first_name' => $response_user_decodedBody['first_name'],
+        'last_name' => $response_user_decodedBody['last_name'],
+        'gender' => $response_user_decodedBody['gender'],
+        'locale' => $response_user_decodedBody['locale'],
+        'timezone' => $response_user_decodedBody['timezone'],
+        'fetch_cnt' => 1,
+        'delivery_time' => '08:00:00',
+        'delivery_interval' => '24:00:00',
+        'is_active' => true,
+        'created_at' => $datetime_now,
+        'updated_at' => $datetime_now,
+    );
+    $dbManager->get('Users')->insert($values_users);
+    $user_id = $dbManager->getLastInsertId();
+
+    $values_facebooks = array(
+        'user_id' => $user_id,
+        'facebook_user_id' => $response_user_decodedBody['id'],
+        'created_at' => $datetime_now,
+        'updated_at' => $datetime_now,
+    );
+    $dbManager->get('Facebooks')->insert($values_facebooks);
 
         $dbManager->rollBack();
 //        $dbManager->commit();
     }
+
+    // commit
+    $dbManager->rollBack();
+//    $dbManager->commit();
 
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
