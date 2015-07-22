@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bb926973a953083ced8ab2973b0c0154",
+    "hash": "0ff85ad82f9070002bf33d44f12bfa0a",
     "packages": [
         {
             "name": "facebook/php-sdk-v4",
@@ -97,12 +97,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-db.git",
-                "reference": "b13e2ef6f1f0bb22f6c09164c2c3dcce2b6e6b8f"
+                "reference": "85411d9c3f091815f794a856960afd9ab8d01ba9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/b13e2ef6f1f0bb22f6c09164c2c3dcce2b6e6b8f",
-                "reference": "b13e2ef6f1f0bb22f6c09164c2c3dcce2b6e6b8f",
+                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/85411d9c3f091815f794a856960afd9ab8d01ba9",
+                "reference": "85411d9c3f091815f794a856960afd9ab8d01ba9",
                 "shasum": ""
             },
             "require": {
@@ -119,7 +119,37 @@
                 "MIT"
             ],
             "description": "database library",
-            "time": "2015-07-21 06:21:42"
+            "time": "2015-07-21 09:45:56"
+        },
+        {
+            "name": "yutaf/url",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yutaf/php-library-url.git",
+                "reference": "35aedff398c2070290775a08b6a20d42da72a243"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yutaf/php-library-url/zipball/35aedff398c2070290775a08b6a20d42da72a243",
+                "reference": "35aedff398c2070290775a08b6a20d42da72a243",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "."
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "url class",
+            "time": "2015-07-22 03:39:39"
         }
     ],
     "packages-dev": [
@@ -1078,7 +1108,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "yutaf/db": 20,
-        "yutaf/class-loader": 20
+        "yutaf/class-loader": 20,
+        "yutaf/url": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
