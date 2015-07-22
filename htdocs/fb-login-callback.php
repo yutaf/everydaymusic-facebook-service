@@ -14,10 +14,7 @@ try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
         // redirect to login page
-        $scheme = 'http';
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-            $scheme = 'https';
-        }
+        $scheme = Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/login', true, 302);
         exit;
     }
@@ -37,10 +34,7 @@ try {
     $facebooks_row = $dbManager->get('Facebooks')->fetchByFacebookUserId($facebook_user_id);
     if($facebooks_row) {
         // redirect to list page
-        $scheme = 'http';
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-            $scheme = 'https';
-        }
+        $scheme = Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
         exit;
     }
@@ -87,10 +81,7 @@ try {
 //        $dbManager->commit();
 
         // redirect to list page
-        $scheme = 'http';
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-            $scheme = 'https';
-        }
+        $scheme = Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
         exit;
     }
