@@ -3,7 +3,6 @@
         bootstrap="phpunit.bootstrap.php"
         processIsolation="false"
         verbose="true"
-        strict="false"
         colors="true">
     <testsuites>
         <testsuite name="PHPUnit">
