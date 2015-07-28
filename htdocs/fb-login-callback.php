@@ -74,11 +74,10 @@ try {
     // get music data
     $response_music = $fb->get('/me/music?limit=1000');
     $response_music_decodedBody = $response_music->getDecodedBody();
-    $music_lists = $response_music_decodedBody['data'];
-    if(! isset($music_lists) || ! is_array($music_lists) || count($music_lists) === 0) {
+    $music_sets = $response_music_decodedBody['data'];
+    if(! isset($music_sets) || ! is_array($music_sets) || count($music_sets) === 0) {
         // commit
-        $dbManager->rollBack();
-//        $dbManager->commit();
+        $dbManager->commit();
 
         // redirect to list page
         $scheme = Url::getScheme();
@@ -86,9 +85,101 @@ try {
         exit;
     }
 
+    $artists_rows = $dbManager->get('Artists')->fetchAll();
+    $festivals_rows = $dbManager->get('Festivals')->fetchAll();
+    $patterns_removing = getRemovingPatterns();
+    $values_artists_users_sets = array();
+    $values_festivals_users_sets = array();
+    $inserted_artist_names = array();
+    $inserted_festival_ids = array();
+
+    foreach($music_sets as $k_music_sets => $music_set) {
+        //TODO Insert into artists, festivals if the value does not exist in each tables
+        //TODO use partial match & ignore letter case
+        //TODO facebook データの case 違いの同名に注意
+        foreach($festivals_rows as $k_festivals_rows => $festivals_row) {
+            $result_match = preg_match('{'.$festivals_row['name'].'}i', $music_set['name']);
+            if($result_match !== 1) {
+                continue;
+            }
+            if(in_array($festivals_row['id'], $inserted_festival_ids)) {
+                // go to next data
+                continue 2;
+            }
+            
+            // matched
+            $values_festivals_users_sets[] = array(
+                'festival_id' => $festivals_row['id'],
+                'user_id' => $user_id,
+                'created_at' => $datetime_now,
+                'updated_at' => $datetime_now,
+            );
+            // DO NOT delete matched row because we must recognize data as festival data
+//            unset($festivals_rows[$k_festivals_rows]);
+            $inserted_festival_ids[] = $festivals_row['id'];
+            // go to next data
+            continue 2;
+        }
+
+        foreach($artists_rows as $k_artists_rows => $artists_row) {
+            $result_match = preg_match('{'.$artists_row['name'].'}i', $music_set['name']);
+            if($result_match !== 1) {
+                continue;
+            }
+            if(in_array(mb_strtolower($artists_row['name']), $inserted_artist_names)) {
+                // go to next data
+                continue 2;
+            }
+            // matched
+            $values_artists_users_sets[] = array(
+                'artist_id' => $artists_row['id'],
+                'user_id' => $user_id,
+                'created_at' => $datetime_now,
+                'updated_at' => $datetime_now,
+            );
+            // delete matched row
+            unset($artists_rows[$k_artists_rows]);
+            $inserted_artist_names[] = mb_strtolower($artists_row['name']);
+            // go to next data
+            continue 2;
+        }
+
+        // insert new artist
+        $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
+        if(in_array(mb_strtolower($artist_name), $inserted_artist_names)) {
+            // go to next data
+            continue;
+        }
+
+        $values_artists = array(
+            'name' => $artist_name,
+            'created_at' => $datetime_now,
+            'updated_at' => $datetime_now,
+        );
+        $dbManager->get('Artists')->insert($values_artists);
+        $inserted_artist_names[] = mb_strtolower($artist_name);
+
+        $artist_id = $dbManager->getLastInsertId();
+        $values_artists_users_sets[] = array(
+            'artist_id' => $artist_id,
+            'user_id' => $user_id,
+            'created_at' => $datetime_now,
+            'updated_at' => $datetime_now,
+        );
+    }
+
+    // insert into artists_users
+    $dbManager->get('ArtistsUsers')->insertMultipleTimes($values_artists_users_sets);
+    // insert into festivals_users
+    $dbManager->get('ArtistsUsers')->insertMultipleTimes($values_festivals_users_sets);
+
     // commit
-    $dbManager->rollBack();
-//    $dbManager->commit();
+    $dbManager->commit();
+
+    // redirect to list page
+    $scheme = Url::getScheme();
+    header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+    exit;
 
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
@@ -108,6 +199,14 @@ try {
     $message = 'Error: ' . $e->getMessage();
     printErrorPage($message);
     exit;
+}
+
+function getRemovingPatterns()
+{
+    return array(
+        '{ \([^\)]*\)$}',
+        '{ official$}i',
+    );
 }
 
 function printErrorPage($message)
