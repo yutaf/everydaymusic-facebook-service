@@ -4,9 +4,9 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 require_once dirname(__DIR__).'/bootstrap.php';
 
 $fb = new Facebook\Facebook([
-    'app_id' => '1576810885918079',
-    'app_secret' => '95e4807ef31f33d54511f36a6c2fb48a',
-    'default_graph_version' => 'v2.4',
+    'app_id' => $_ENV['FACEBOOK_APP_ID'],
+    'app_secret' => $_ENV['FACEBOOK_APP_SECRET'],
+    'default_graph_version' => $_ENV['FACEBOOK_GRAPH_VERSION'],
 ]);
 
 $helper = $fb->getJavaScriptHelper();
