@@ -64,7 +64,7 @@ try {
 
     $values_facebooks = array(
         'user_id' => $user_id,
-        'facebook_user_id' => $response_user_decodedBody['id'],
+        'facebook_user_id' => $facebook_user_id,
         'created_at' => $datetime_now,
         'updated_at' => $datetime_now,
     );
