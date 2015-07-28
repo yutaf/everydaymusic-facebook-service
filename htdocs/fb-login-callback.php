@@ -107,8 +107,6 @@ try {
             $values_artists_users_sets[] = array(
                 'artist_id' => $artists_row['id'],
                 'user_id' => $user_id,
-                'created_at' => $datetime_now,
-                'updated_at' => $datetime_now,
             );
             // delete matched row
             unset($artists_rows[$k_artists_rows]);
