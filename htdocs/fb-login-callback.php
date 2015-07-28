@@ -92,7 +92,8 @@ try {
     foreach($music_sets as $k_music_sets => $music_set) {
         //TODO Insert into artists table if the value does not exist in the table
         //TODO use partial match & ignore letter case
-        //TODO facebook データの case 違いの同名に注意
+        // facebook データの case 違いの同名に注意
+        // Do not insert SAME NAME but CASE DIFFERENT data into artists table. Avoid DUPLICATED data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
             $result_match = preg_match('{'.$artists_row['name'].'}i', $music_set['name']);
             if($result_match !== 1) {
