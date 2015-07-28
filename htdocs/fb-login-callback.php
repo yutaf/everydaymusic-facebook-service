@@ -42,7 +42,6 @@ try {
     // transaction
     $dbManager->beginTransaction();
 
-    //TODO email address が登録されていない時の処理
     $datetime_now = date('Y-m-d H:i:s');
 
     $values_users = array(
