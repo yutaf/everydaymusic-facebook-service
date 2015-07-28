@@ -90,12 +90,13 @@ try {
     $inserted_artist_names = array();
 
     foreach($music_sets as $k_music_sets => $music_set) {
-        //TODO Insert into artists table if the value does not exist in the table
-        //TODO use partial match & ignore letter case
-        // facebook データの case 違いの同名に注意
+        // remove unnecessary words, strings
+        $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
+
+        // Insert into artists table if the value does not exist in the table
         // Do not insert SAME NAME but CASE DIFFERENT data into artists table. Avoid DUPLICATED data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
-            $result_match = preg_match('{^'.$artists_row['name'].'$}i', $music_set['name']);
+            $result_match = preg_match('{^'.$artists_row['name'].'$}i', $artist_name);
             if($result_match !== 1) {
                 continue;
             }
@@ -116,7 +117,6 @@ try {
         }
 
         // insert new artist
-        $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
         if(in_array(mb_strtolower($artist_name), $inserted_artist_names)) {
             // go to next data
             continue;
