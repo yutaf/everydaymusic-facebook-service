@@ -95,7 +95,7 @@ try {
         // facebook データの case 違いの同名に注意
         // Do not insert SAME NAME but CASE DIFFERENT data into artists table. Avoid DUPLICATED data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
-            $result_match = preg_match('{'.$artists_row['name'].'}i', $music_set['name']);
+            $result_match = preg_match('{^'.$artists_row['name'].'$}i', $music_set['name']);
             if($result_match !== 1) {
                 continue;
             }
