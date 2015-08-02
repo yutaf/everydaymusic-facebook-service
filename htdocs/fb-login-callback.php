@@ -33,6 +33,14 @@ try {
     // check if facebook_user_id is registered
     $facebooks_row = $dbManager->get('Facebooks')->fetchByFacebookUserId($facebook_user_id);
     if($facebooks_row) {
+        // authorize
+        $user_id = $facebooks_row['user_id'];
+        // redis
+        $redis = new Redis();
+        $redis->connect('redis');
+        $authsecret = $redis->hGet("user:{$user_id}", 'auth');
+        setcookie("auth",$authsecret,time()+3600*24*365);
+
         // redirect to list page
         $scheme = Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
@@ -143,6 +151,20 @@ try {
     // commit
     $dbManager->commit();
 
+    // authorize
+    $authsecret = getrand();
+    // redis
+    $redis = new Redis();
+    $redis->connect('redis');
+    // transaction
+    $ret = $redis->multi()
+        ->hSet("user:{$user_id}", 'auth', $authsecret)
+        ->hSet('auths', $authsecret, $user_id)
+        ->exec();
+//    $redis->hSet("user:{$user_id}", 'auth', $authsecret);
+//    $redis->hSet('auths', $authsecret, $user_id);
+    setcookie("auth",$authsecret,time()+3600*24*365);
+
     // redirect to list page
     $scheme = Url::getScheme();
     header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
@@ -174,6 +196,13 @@ function getRemovingPatterns()
         '{ \([^\)]*\)$}',
         '{ official$}i',
     );
+}
+
+function getrand() {
+    $fd = fopen("/dev/urandom","r");
+    $data = fread($fd,16);
+    fclose($fd);
+    return md5($data);
 }
 
 function printErrorPage($message)
