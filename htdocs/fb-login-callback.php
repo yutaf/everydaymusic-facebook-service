@@ -39,6 +39,13 @@ try {
         $redis = new Redis();
         $redis->connect('redis');
         $authsecret = $redis->hGet("user:{$user_id}", 'auth');
+        if(! $authsecret) {
+            $authsecret = getrand();
+            $ret = $redis->multi()
+                ->hSet("user:{$user_id}", 'auth', $authsecret)
+                ->hSet('auths', $authsecret, $user_id)
+                ->exec();
+        }
         setcookie("auth",$authsecret,time()+3600*24*365);
 
         // redirect to list page
