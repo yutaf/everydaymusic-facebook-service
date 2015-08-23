@@ -22,7 +22,7 @@ try {
     // Logged in
     $fb->setDefaultAccessToken($accessToken);
     // get user profile
-    $response_user = $fb->get('/me?fields=id,name,email,first_name,last_name,gender,locale,timezone');
+    $response_user = $fb->get('/me?fields=id,email,locale,timezone');
     $response_user_decodedBody = $response_user->getDecodedBody();
     $facebook_user_id = $response_user_decodedBody['id'];
 
@@ -57,19 +57,14 @@ try {
     // transaction
     $dbManager->beginTransaction();
 
+    $delivery_time_default = '08:00:00';
     $datetime_now = date('Y-m-d H:i:s');
 
     $values_users = array(
         'email' => $response_user_decodedBody['email'],
-        'name' => $response_user_decodedBody['name'],
-        'first_name' => $response_user_decodedBody['first_name'],
-        'last_name' => $response_user_decodedBody['last_name'],
-        'gender' => $response_user_decodedBody['gender'],
         'locale' => $response_user_decodedBody['locale'],
         'timezone' => $response_user_decodedBody['timezone'],
-        'fetch_cnt' => 1,
-        'delivery_time' => '08:00:00',
-        'delivery_interval' => '24:00:00',
+        'delivery_time' => $delivery_time_default,
         'is_active' => true,
         'created_at' => $datetime_now,
         'updated_at' => $datetime_now,
