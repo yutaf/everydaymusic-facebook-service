@@ -219,7 +219,7 @@ function printErrorPage($message)
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Error</title>
 </head>
 <body>
 <p>{$message}</p>
