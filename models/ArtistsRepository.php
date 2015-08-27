@@ -1,6 +1,6 @@
 <?php
 
-class ArtistsRepository extends DbRepository
+class ArtistsRepository extends Yutaf\DbRepository
 {
     protected function setTableName()
     {

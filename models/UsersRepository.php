@@ -1,6 +1,6 @@
 <?php
 
-class UsersRepository extends DbRepository
+class UsersRepository extends Yutaf\DbRepository
 {
     protected function setTableName()
     {

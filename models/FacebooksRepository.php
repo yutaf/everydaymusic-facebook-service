@@ -1,6 +1,6 @@
 <?php
 
-class FacebooksRepository extends DbRepository
+class FacebooksRepository extends Yutaf\DbRepository
 {
     protected function setTableName()
     {
