@@ -14,7 +14,7 @@ try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
         // redirect to login page
-        $scheme = Url::getScheme();
+        $scheme = Yutaf\Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/login', true, 302);
         exit;
     }
@@ -49,7 +49,7 @@ try {
         setcookie("auth",$authsecret,time()+3600*24*365);
 
         // redirect to list page
-        $scheme = Url::getScheme();
+        $scheme = Yutaf\Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
         exit;
     }
@@ -89,7 +89,7 @@ try {
         $dbManager->commit();
 
         // redirect to list page
-        $scheme = Url::getScheme();
+        $scheme = Yutaf\Url::getScheme();
         header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
         exit;
     }
@@ -168,7 +168,7 @@ try {
     setcookie("auth",$authsecret,time()+3600*24*365);
 
     // redirect to list page
-    $scheme = Url::getScheme();
+    $scheme = Yutaf\Url::getScheme();
     header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
     exit;
 
