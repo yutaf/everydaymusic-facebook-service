@@ -27,7 +27,7 @@ try {
     $facebook_user_id = $response_user_decodedBody['id'];
 
     // db
-    $dbManager = new DbManager();
+    $dbManager = new Yutaf\DbManager();
     $dbManager->connect($_ENV);
 
     // check if facebook_user_id is registered
