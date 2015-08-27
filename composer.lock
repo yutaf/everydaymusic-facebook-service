@@ -127,12 +127,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-url.git",
-                "reference": "35aedff398c2070290775a08b6a20d42da72a243"
+                "reference": "8c8e030a3a69d5fc79221c2d25a50f8453d0cfae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yutaf/php-library-url/zipball/35aedff398c2070290775a08b6a20d42da72a243",
-                "reference": "35aedff398c2070290775a08b6a20d42da72a243",
+                "url": "https://api.github.com/repos/yutaf/php-library-url/zipball/8c8e030a3a69d5fc79221c2d25a50f8453d0cfae",
+                "reference": "8c8e030a3a69d5fc79221c2d25a50f8453d0cfae",
                 "shasum": ""
             },
             "require": {
@@ -140,16 +140,16 @@
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "."
-                ]
+                "psr-4": {
+                    "Yutaf\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "url class",
-            "time": "2015-07-22 03:39:39"
+            "time": "2015-08-27 11:53:24"
         }
     ],
     "packages-dev": [
