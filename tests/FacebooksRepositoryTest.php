@@ -11,9 +11,14 @@ class FacebooksRepositoryTest extends PHPUnit_Framework_TestCase
         self::$dbManager->connect($_ENV);
     }
 
-    public function testFetchByFacebookUserId()
+    public function testFetchByConditions()
     {
         $facebook_user_id = '904535809601886';
-        $result = self::$dbManager->get('Facebooks')->fetchByFacebookUserId($facebook_user_id);
+        $conditions_facebooks = array(
+            'wheres' => array(
+                'facebook_user_id' => $facebook_user_id,
+            ),
+        );
+        $result = self::$dbManager->get('Facebooks')->fetchByConditions($conditions_facebooks);
     }
 }
