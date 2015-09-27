@@ -31,7 +31,12 @@ try {
     $dbManager->connect($_ENV);
 
     // check if facebook_user_id is registered
-    $facebooks_row = $dbManager->get('Facebooks')->fetchByFacebookUserId($facebook_user_id);
+    $conditions_facebooks = array(
+        'wheres' => array(
+            'facebook_user_id' => $facebook_user_id,
+        ),
+    );
+    $facebooks_row = $dbManager->get('Facebooks')->fetchByConditions($conditions_facebooks);
     if($facebooks_row) {
         // authorize
         $user_id = $facebooks_row['user_id'];
