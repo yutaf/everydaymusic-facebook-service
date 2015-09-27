@@ -7,7 +7,7 @@ class FacebooksRepositoryTest extends PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$dbManager = new DbManager();
+        self::$dbManager = new Yutaf\DbManager();
         self::$dbManager->connect($_ENV);
     }
 
