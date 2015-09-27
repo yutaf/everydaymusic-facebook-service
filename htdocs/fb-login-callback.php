@@ -153,7 +153,7 @@ try {
     }
 
     // insert into artists_users
-    $dbManager->get('ArtistsUsers')->insertMultipleTimes($values_artists_users_sets);
+    $dbManager->get('ArtistsUsers')->insertMultipleRows($values_artists_users_sets);
 
     // commit
     $dbManager->commit();
