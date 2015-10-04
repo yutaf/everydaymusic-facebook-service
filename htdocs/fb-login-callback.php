@@ -59,7 +59,7 @@ try {
     // transaction
     $dbManager->beginTransaction();
 
-    $delivery_time_default = '08:00:00';
+    $delivery_time_default = getenv('DEFAULT_DELIVERY_TIME');
     $datetime_now = date('Y-m-d H:i:s');
 
     $values_users = array(
