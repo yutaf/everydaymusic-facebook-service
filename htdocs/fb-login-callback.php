@@ -41,7 +41,7 @@ try {
     );
     $facebooks_row = $dbManager->get('Facebooks')->fetchByConditions($conditions_facebooks);
     if($facebooks_row) {
-        // authorize
+        // authentication
         $user_id = $facebooks_row['user_id'];
         $authsecret = $redis->hGet("user:{$user_id}", 'auth');
         if(! $authsecret) {
@@ -87,7 +87,7 @@ try {
     if(! isset($music_sets) || ! is_array($music_sets) || count($music_sets) === 0) {
         // commit
         $dbManager->commit();
-        // authorize
+        // authentication
         $authsecret = getrand();
         authorize($user_id, $authsecret, $redis);
 
@@ -155,7 +155,7 @@ try {
     // commit
     $dbManager->commit();
 
-    // authorize
+    // authentication
     $authsecret = getrand();
     authorize($user_id, $authsecret, $redis);
 
