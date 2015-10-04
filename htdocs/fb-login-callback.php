@@ -14,8 +14,7 @@ try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
         // redirect to login page
-        $scheme = Yutaf\Url::getScheme();
-        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/login', true, 302);
+        redirectTo('/login');
         exit;
     }
 
@@ -51,8 +50,7 @@ try {
         authorize($user_id, $authsecret, $redis);
 
         // redirect to list page
-        $scheme = Yutaf\Url::getScheme();
-        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+        redirectTo('/list');
         exit;
     }
 
@@ -94,8 +92,7 @@ try {
         authorize($user_id, $authsecret, $redis);
 
         // redirect to list page
-        $scheme = Yutaf\Url::getScheme();
-        header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+        redirectTo('/list');
         exit;
     }
 
@@ -163,8 +160,7 @@ try {
     authorize($user_id, $authsecret, $redis);
 
     // redirect to list page
-    $scheme = Yutaf\Url::getScheme();
-    header("Location: {$scheme}://".$_SERVER['HTTP_HOST'].'/list', true, 302);
+    redirectTo('/list');
     exit;
 
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -185,6 +181,12 @@ try {
     $message = 'Error: ' . $e->getMessage();
     printErrorPage($message);
     exit;
+}
+
+function redirectTo($path)
+{
+    $scheme = Yutaf\Url::getScheme();
+    header("Location: {$scheme}://{$_SERVER['HTTP_HOST']}{$path}", true, 302);
 }
 
 function authorize($user_id, $authsecret, $redis)
