@@ -98,12 +98,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-db.git",
-                "reference": "54aac465e63dbea473609e86079ec4fceccd8c7c"
+                "reference": "d8fefcf24bb6756a741374a74396ea1789472806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/54aac465e63dbea473609e86079ec4fceccd8c7c",
-                "reference": "54aac465e63dbea473609e86079ec4fceccd8c7c",
+                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/d8fefcf24bb6756a741374a74396ea1789472806",
+                "reference": "d8fefcf24bb6756a741374a74396ea1789472806",
                 "shasum": ""
             },
             "require": {
@@ -120,7 +120,7 @@
                 "MIT"
             ],
             "description": "database library",
-            "time": "2015-09-17 09:22:33"
+            "time": "2015-10-01 03:47:26"
         },
         {
             "name": "yutaf/url",
@@ -128,12 +128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-url.git",
-                "reference": "8c8e030a3a69d5fc79221c2d25a50f8453d0cfae"
+                "reference": "92af7a7d944874d0f0636d381b34033ed968015a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yutaf/php-library-url/zipball/8c8e030a3a69d5fc79221c2d25a50f8453d0cfae",
-                "reference": "8c8e030a3a69d5fc79221c2d25a50f8453d0cfae",
+                "url": "https://api.github.com/repos/yutaf/php-library-url/zipball/92af7a7d944874d0f0636d381b34033ed968015a",
+                "reference": "92af7a7d944874d0f0636d381b34033ed968015a",
                 "shasum": ""
             },
             "require": {
@@ -150,7 +150,7 @@
                 "MIT"
             ],
             "description": "url class",
-            "time": "2015-08-27 11:53:24"
+            "time": "2015-09-29 08:34:46"
         }
     ],
     "packages-dev": [
@@ -631,16 +631,16 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.3.7",
+            "version": "2.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "5e2645ad49d196e020b85598d7c97e482725786a"
+                "reference": "ac8e7a3db35738d56ee9a76e78a4e03d97628983"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5e2645ad49d196e020b85598d7c97e482725786a",
-                "reference": "5e2645ad49d196e020b85598d7c97e482725786a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/ac8e7a3db35738d56ee9a76e78a4e03d97628983",
+                "reference": "ac8e7a3db35738d56ee9a76e78a4e03d97628983",
                 "shasum": ""
             },
             "require": {
@@ -683,7 +683,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-08-19 09:14:08"
+            "time": "2015-10-02 06:51:40"
         },
         {
             "name": "sebastian/comparator",
