@@ -26,6 +26,10 @@ try {
     $response_user_decodedBody = $response_user->getDecodedBody();
     $facebook_user_id = $response_user_decodedBody['id'];
 
+    // redis
+    $redis = new Redis();
+    $redis->connect('redis');
+
     // db
     $dbManager = new Yutaf\DbManager();
     $dbManager->connect($_ENV);
@@ -40,18 +44,11 @@ try {
     if($facebooks_row) {
         // authorize
         $user_id = $facebooks_row['user_id'];
-        // redis
-        $redis = new Redis();
-        $redis->connect('redis');
         $authsecret = $redis->hGet("user:{$user_id}", 'auth');
         if(! $authsecret) {
             $authsecret = getrand();
-            $ret = $redis->multi()
-                ->hSet("user:{$user_id}", 'auth', $authsecret)
-                ->hSet('auths', $authsecret, $user_id)
-                ->exec();
         }
-        setcookie("auth",$authsecret,time()+3600*24*365);
+        authorize($user_id, $authsecret, $redis);
 
         // redirect to list page
         $scheme = Yutaf\Url::getScheme();
@@ -92,6 +89,9 @@ try {
     if(! isset($music_sets) || ! is_array($music_sets) || count($music_sets) === 0) {
         // commit
         $dbManager->commit();
+        // authorize
+        $authsecret = getrand();
+        authorize($user_id, $authsecret, $redis);
 
         // redirect to list page
         $scheme = Yutaf\Url::getScheme();
@@ -160,17 +160,7 @@ try {
 
     // authorize
     $authsecret = getrand();
-    // redis
-    $redis = new Redis();
-    $redis->connect('redis');
-    // transaction
-    $ret = $redis->multi()
-        ->hSet("user:{$user_id}", 'auth', $authsecret)
-        ->hSet('auths', $authsecret, $user_id)
-        ->exec();
-//    $redis->hSet("user:{$user_id}", 'auth', $authsecret);
-//    $redis->hSet('auths', $authsecret, $user_id);
-    setcookie("auth",$authsecret,time()+3600*24*365);
+    authorize($user_id, $authsecret, $redis);
 
     // redirect to list page
     $scheme = Yutaf\Url::getScheme();
@@ -195,6 +185,15 @@ try {
     $message = 'Error: ' . $e->getMessage();
     printErrorPage($message);
     exit;
+}
+
+function authorize($user_id, $authsecret, $redis)
+{
+    $ret = $redis->multi()
+        ->hSet("user:{$user_id}", 'auth', $authsecret)
+        ->hSet('auths', $authsecret, $user_id)
+        ->exec();
+    setcookie("auth",$authsecret,time()+3600*24*365);
 }
 
 function getRemovingPatterns()
