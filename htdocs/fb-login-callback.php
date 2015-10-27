@@ -166,20 +166,20 @@ try {
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
     $message = 'Graph returned an error: ' . $e->getMessage();
-    printErrorPage($message);
+    renderErrorPage($message);
     exit;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
     // When validation fails or other local issues
     $message = 'Facebook SDK returned an error: ' . $e->getMessage();
-    printErrorPage($message);
+    renderErrorPage($message);
     exit;
 } catch(PDOException $e) {
     $message = 'Database error: ' . $e->getMessage();
-    printErrorPage($message);
+    renderErrorPage($message);
     exit;
 } catch(Exception $e) {
     $message = 'Error: ' . $e->getMessage();
-    printErrorPage($message);
+    renderErrorPage($message);
     exit;
 }
 
@@ -213,7 +213,7 @@ function getrand() {
     return md5($data);
 }
 
-function printErrorPage($message)
+function renderErrorPage($message)
 {
     echo <<<EOL
 <!doctype html>
