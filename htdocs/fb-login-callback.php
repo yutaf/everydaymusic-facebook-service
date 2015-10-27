@@ -224,7 +224,7 @@ function renderErrorPage($message)
 </head>
 <body>
 <p>{$message}</p>
-<p><a href="/login">back</a></p>
+<p><a href="/">back</a></p>
 </body>
 </html>
 EOL;
