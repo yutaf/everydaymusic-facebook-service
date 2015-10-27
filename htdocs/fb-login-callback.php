@@ -43,11 +43,21 @@ try {
     if($facebooks_row) {
         // authentication
         $user_id = $facebooks_row['user_id'];
+        $conditions_users = array(
+            'wheres' => array(
+                'id' => $user_id,
+            ),
+        );
+        $users_row = $dbManager->get('Users')->fetchByConditions($conditions_users);
+        if(! $users_row) {
+            throw new RuntimeException('Login failed. Please try again.');
+        }
         $authsecret = $redis->hGet("user:{$user_id}", 'auth');
         if(! $authsecret) {
             $authsecret = getrand();
         }
-        authorize($user_id, $authsecret, $redis);
+        $user = array_merge($users_row, array('auth' => $authsecret));
+        authorize($redis, $user);
 
         // redirect to list page
         redirectTo('/list');
@@ -80,6 +90,17 @@ try {
     );
     $dbManager->get('Facebooks')->insert($values_facebooks);
 
+    // authentication
+    $authsecret = getrand();
+    $user = array_merge(
+        array(
+            'id' => $user_id,
+            'auth' => $authsecret,
+        ),
+        $values_users
+    );
+    authorize($redis, $user);
+
     // get music data
     $response_music = $fb->get('/me/music?limit=1000');
     $response_music_decodedBody = $response_music->getDecodedBody();
@@ -87,10 +108,6 @@ try {
     if(! isset($music_sets) || ! is_array($music_sets) || count($music_sets) === 0) {
         // commit
         $dbManager->commit();
-        // authentication
-        $authsecret = getrand();
-        authorize($user_id, $authsecret, $redis);
-
         // redirect to list page
         redirectTo('/list');
         exit;
@@ -154,11 +171,6 @@ try {
 
     // commit
     $dbManager->commit();
-
-    // authentication
-    $authsecret = getrand();
-    authorize($user_id, $authsecret, $redis);
-
     // redirect to list page
     redirectTo('/list');
     exit;
@@ -189,13 +201,13 @@ function redirectTo($path)
     header("Location: {$scheme}://{$_SERVER['HTTP_HOST']}{$path}", true, 302);
 }
 
-function authorize($user_id, $authsecret, $redis)
+function authorize($redis, $user=array())
 {
     $ret = $redis->multi()
-        ->hSet("user:{$user_id}", 'auth', $authsecret)
-        ->hSet('auths', $authsecret, $user_id)
+        ->hMset("user:{$user['id']}", $user)
+        ->hSet('auths', $user['auth'], $user['id'])
         ->exec();
-    setcookie("auth",$authsecret,time()+3600*24*365);
+    setcookie("auth",$user['auth'],time()+3600*24*365);
 }
 
 function getRemovingPatterns()
