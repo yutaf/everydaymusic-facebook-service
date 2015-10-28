@@ -120,7 +120,7 @@ try {
         $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
 
         // Insert into artists table if the value does not exist in the table
-        // Do not insert SAME NAME but CASE DIFFERENT data into artists table. Avoid DUPLICATED data.
+        // Do not insert SAME NAME, CASE DIFFERENT data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
             $result_match = preg_match('{^'.$artists_row['name'].'$}i', $artist_name);
             if($result_match !== 1) {
