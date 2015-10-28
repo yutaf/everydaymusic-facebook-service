@@ -48,14 +48,11 @@ try {
                 'id' => $user_id,
             ),
         );
-        $users_row = $dbManager->get('Users')->fetchByConditions($conditions_users);
-        if(! $users_row) {
-            throw new RuntimeException('Login failed. Please try again.');
-        }
         $authsecret = $redis->hGet("user:{$user_id}", 'auth');
         if(! $authsecret) {
             $authsecret = getrand();
         }
+        $users_row = $dbManager->get('Users')->fetchByConditions($conditions_users);
         $user = array_merge($users_row, array('auth' => $authsecret));
         authorize($redis, $user);
 
