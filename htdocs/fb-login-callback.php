@@ -65,13 +65,15 @@ try {
     $dbManager->beginTransaction();
 
     $delivery_time_default = getenv('DEFAULT_DELIVERY_TIME');
+    $dt = new DateTime("{$delivery_time_default} - {$response_user_decodedBody['timezone']} hours");
+    $delivery_time = $dt->format('H:i:s');
     $datetime_now = date('Y-m-d H:i:s');
 
     $values_users = array(
         'email' => $response_user_decodedBody['email'],
         'locale' => $response_user_decodedBody['locale'],
         'timezone' => $response_user_decodedBody['timezone'],
-        'delivery_time' => $delivery_time_default,
+        'delivery_time' => $delivery_time,
         'is_active' => true,
         'created_at' => $datetime_now,
         'updated_at' => $datetime_now,
