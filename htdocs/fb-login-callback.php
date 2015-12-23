@@ -19,8 +19,8 @@ $helper = $fb->getJavaScriptHelper();
 try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
-        // redirect to login page
-        redirectTo('/login');
+        // redirect to root page
+        redirectTo('/');
         exit;
     }
 
