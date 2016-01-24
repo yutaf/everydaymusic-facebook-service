@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0ff85ad82f9070002bf33d44f12bfa0a",
-    "content-hash": "c57b144c9e0fb7c9b8125f21cdffa4e3",
+    "hash": "fd9c03497e30bf81b1699bf91e00d76c",
+    "content-hash": "ee5fbd97be75a3fd9e857ae5fb13db9d",
     "packages": [
         {
             "name": "facebook/php-sdk-v4",
@@ -64,7 +64,7 @@
         },
         {
             "name": "yutaf/class-loader",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-class-loader.git",
@@ -94,7 +94,7 @@
         },
         {
             "name": "yutaf/db",
-            "version": "dev-master",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-db.git",
@@ -124,7 +124,7 @@
         },
         {
             "name": "yutaf/url",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-url.git",
@@ -1058,25 +1058,25 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.1",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966"
+                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966",
-                "reference": "ac84cbb98b68a6abbc9f5149eb96ccc7b07b8966",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/3df409958a646dad2bc5046c3fb671ee24a1a691",
+                "reference": "3df409958a646dad2bc5046c3fb671ee24a1a691",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": ">=5.5.9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -1103,16 +1103,12 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-12-26 13:37:56"
+            "time": "2015-12-26 13:39:53"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "yutaf/db": 20,
-        "yutaf/class-loader": 20,
-        "yutaf/url": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
