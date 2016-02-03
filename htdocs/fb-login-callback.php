@@ -87,7 +87,7 @@ try {
         'locale' => $response_user_decodedBody['locale'],
         'timezone' => $timezone,
         'delivery_time' => $delivery_time,
-        'is_active' => true,
+        'is_active' => 1,
         'created_at' => $datetime_now,
         'updated_at' => $datetime_now,
     );
