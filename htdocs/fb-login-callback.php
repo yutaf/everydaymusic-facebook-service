@@ -81,9 +81,13 @@ try {
     $dt = new DateTime("{$delivery_time_default} {$operator} {$timezone_abs} hours");
     $delivery_time = $dt->format('H:i:s');
     $datetime_now = date('Y-m-d H:i:s');
+    $email = '';
+    if(isset($response_user_decodedBody['email'])) {
+        $email = $response_user_decodedBody['email'];
+    }
 
     $values_users = array(
-        'email' => $response_user_decodedBody['email'],
+        'email' => $email,
         'locale' => $response_user_decodedBody['locale'],
         'timezone' => $timezone,
         'delivery_time' => $delivery_time,
