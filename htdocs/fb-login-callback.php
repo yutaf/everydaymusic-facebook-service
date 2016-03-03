@@ -3,6 +3,7 @@
 require_once dirname(__DIR__).'/vendor/autoload.php';
 require_once dirname(__DIR__).'/bootstrap.php';
 
+// facebook
 $facebook_app_id = $_ENV['FACEBOOK_APP_ID'];
 $facebook_app_secret = $_ENV['FACEBOOK_APP_SECRET'];
 // develop version
@@ -15,8 +16,21 @@ $fb = new Facebook\Facebook([
     'app_secret' => $facebook_app_secret,
     'default_graph_version' => $_ENV['FACEBOOK_GRAPH_VERSION'],
 ]);
-
 $helper = $fb->getJavaScriptHelper();
+
+// monolog
+$maxFiles = 45;
+$handler = new Monolog\Handler\RotatingFileHandler(dirname(__DIR__).'/logs/app/app.log', $maxFiles, Monolog\Logger::WARNING);
+$handler->setFormatter(new Monolog\Formatter\LineFormatter());
+$handlers = [$handler];
+
+//$web_processor = new Monolog\Processor\WebProcessor();
+//$processors = [$web_processor];
+
+$name = 'fb-login';
+$log = new Monolog\Logger($name, $handlers);
+//$log = new Monolog\Logger($name, $handlers, $processors);
+
 try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
@@ -194,19 +208,27 @@ try {
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
     // When Graph returns an error
     $message = 'Graph returned an error: ' . $e->getMessage();
+    $trace = end($e->getTrace());
+    $log->addWarning($message, $trace);
     renderErrorPage($message);
     exit;
 } catch(Facebook\Exceptions\FacebookSDKException $e) {
     // When validation fails or other local issues
     $message = 'Facebook SDK returned an error: ' . $e->getMessage();
+    $trace = end($e->getTrace());
+    $log->addWarning($message, $trace);
     renderErrorPage($message);
     exit;
 } catch(PDOException $e) {
     $message = 'Database error: ' . $e->getMessage();
+    $trace = end($e->getTrace());
+    $log->addWarning($message, $trace);
     renderErrorPage($message);
     exit;
 } catch(Exception $e) {
     $message = 'Error: ' . $e->getMessage();
+    $trace = end($e->getTrace());
+    $log->addWarning($message, $trace);
     renderErrorPage($message);
     exit;
 }
