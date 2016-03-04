@@ -4,16 +4,9 @@ require_once dirname(__DIR__).'/vendor/autoload.php';
 require_once dirname(__DIR__).'/bootstrap.php';
 
 // facebook
-$facebook_app_id = $_ENV['FACEBOOK_APP_ID'];
-$facebook_app_secret = $_ENV['FACEBOOK_APP_SECRET'];
-// develop version
-if(isset($_SERVER['HTTP_HOST']) && (substr($_SERVER['HTTP_HOST'], - strlen('xip.io'))==='xip.io') || substr($_SERVER['HTTP_HOST'], - strlen('vagrantshare.com'))==='vagrantshare.com') {
-    $facebook_app_id = $_ENV['FACEBOOK_APP_ID_DEVELOPMENT'];
-    $facebook_app_secret = $_ENV['FACEBOOK_APP_SECRET_DEVELOPMENT'];
-}
 $fb = new Facebook\Facebook([
-    'app_id' => $facebook_app_id,
-    'app_secret' => $facebook_app_secret,
+    'app_id' => $_ENV['FACEBOOK_APP_ID'],
+    'app_secret' => $_ENV['FACEBOOK_APP_SECRET'],
     'default_graph_version' => $_ENV['FACEBOOK_GRAPH_VERSION'],
 ]);
 $helper = $fb->getJavaScriptHelper();
