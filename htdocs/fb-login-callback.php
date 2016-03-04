@@ -19,17 +19,14 @@ $fb = new Facebook\Facebook([
 $helper = $fb->getJavaScriptHelper();
 
 // monolog
+$log = new Monolog\Logger('fb-login');
+$file = dirname(__DIR__).'/logs/app/app.log';
 $maxFiles = 45;
-$handler = new Monolog\Handler\RotatingFileHandler(dirname(__DIR__).'/logs/app/app.log', $maxFiles, Monolog\Logger::WARNING);
-$handler->setFormatter(new Monolog\Formatter\LineFormatter());
-$handlers = [$handler];
+$handler = new Monolog\Handler\RotatingFileHandler($file, $maxFiles, Monolog\Logger::WARNING);
+//$rotating_file_handler = new Monolog\Handler\RotatingFileHandler($file, $maxFiles, Monolog\Logger::INFO);
+//$handler = new Monolog\Handler\FingersCrossedHandler($rotating_file_handler, new Monolog\Handler\FingersCrossed\ErrorLevelActivationStrategy(Monolog\Logger::WARNING));
 
-//$web_processor = new Monolog\Processor\WebProcessor();
-//$processors = [$web_processor];
-
-$name = 'fb-login';
-$log = new Monolog\Logger($name, $handlers);
-//$log = new Monolog\Logger($name, $handlers, $processors);
+$log->pushHandler($handler);
 
 try {
     $accessToken = $helper->getAccessToken();
