@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ab4726cd5f1eb07d04e8799924395224",
-    "content-hash": "81f95cf18d5f1842aecbab9209370db8",
+    "hash": "10268b1a7442981f5e20271ba2465994",
+    "content-hash": "02949a1c0915b8f1cc7b4a7048a67e1d",
     "packages": [
         {
             "name": "facebook/php-sdk-v4",
@@ -210,16 +210,16 @@
         },
         {
             "name": "yutaf/db",
-            "version": "1.1.4",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yutaf/php-library-db.git",
-                "reference": "f56640162d38bd6523231a3758a7bf421b78ffd1"
+                "reference": "f54f5196602c728ddcf3bf18da7127290ab2e76e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/f56640162d38bd6523231a3758a7bf421b78ffd1",
-                "reference": "f56640162d38bd6523231a3758a7bf421b78ffd1",
+                "url": "https://api.github.com/repos/yutaf/php-library-db/zipball/f54f5196602c728ddcf3bf18da7127290ab2e76e",
+                "reference": "f54f5196602c728ddcf3bf18da7127290ab2e76e",
                 "shasum": ""
             },
             "require": {
@@ -236,7 +236,7 @@
                 "MIT"
             ],
             "description": "database library",
-            "time": "2016-03-04 05:04:45"
+            "time": "2016-03-04 05:12:25"
         },
         {
             "name": "yutaf/url",
