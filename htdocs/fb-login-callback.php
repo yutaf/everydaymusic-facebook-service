@@ -77,6 +77,8 @@ try {
 
     $delivery_time_default = getenv('DEFAULT_DELIVERY_TIME');
     $timezone = $response_user_decodedBody['timezone'];
+    // Fix float value
+    $timezone = floor(intval($timezone));
     $timezone_abs = abs($timezone);
     $operator = '-';
     if($timezone < 0) {
