@@ -1,5 +1,9 @@
 <?php
 
+// Error setting
+ini_set('display_errors',           getenv('VALUE_DISPLAY_ERRORS'));
+ini_set('display_startup_errors',   getenv('VALUE_DISPLAY_STARTUP_ERRORS'));
+
 require_once dirname(__DIR__).'/vendor/autoload.php';
 require_once dirname(__DIR__).'/bootstrap.php';
 
