@@ -105,8 +105,20 @@ try {
         'created_at' => $datetime_now,
         'updated_at' => $datetime_now,
     );
-    $dbManager->get('Users')->insert($values_users);
-    $user_id = $dbManager->getLastInsertId();
+
+    $user_id = false;
+    if(strlen($email)>0) {
+        $user_id = $dbManager->get('Users')->fetchByConditions([
+            'columns' => ['id'],
+            'wheres' => ['email' => $email],
+            'fetch_style' => PDO::FETCH_COLUMN,
+        ]);
+    }
+    if(! $user_id) {
+        // if user has not been created with account/password form
+        $dbManager->get('Users')->insert($values_users);
+        $user_id = $dbManager->getLastInsertId();
+    }
 
     $values_facebooks = array(
         'user_id' => $user_id,
