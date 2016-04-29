@@ -28,126 +28,46 @@ $log->pushHandler($handler);
 try {
     $accessToken = $helper->getAccessToken();
     if(! isset($accessToken)) {
-        // redirect to root page
-        redirectTo('/');
+        redirectTo('/account');
         exit;
     }
 
     // Logged in
     $fb->setDefaultAccessToken($accessToken);
-    // get user profile
-    $response_user = $fb->get('/me?fields=id,email,locale,timezone');
-    $response_user_decodedBody = $response_user->getDecodedBody();
-    $facebook_user_id = $response_user_decodedBody['id'];
+
+    $authcookie = $_COOKIE['auth'];
+    if(empty($authcookie)) {
+        redirectTo('/');
+        exit;
+    }
 
     // redis
     $redis = new Redis();
     $redis->connect('redis');
 
+    $user_id = $redis->hGet('auths', $authcookie);
+    if(empty($user_id)) {
+        redirectTo('/');
+        exit;
+    }
+    $authsecret = $redis->hGet("user:{$user_id}", 'auth');
+    if($authcookie !== $authsecret) {
+        redirectTo('/');
+        exit;
+    }
+
     // db
     $dbManager = new Yutaf\DbManager();
     $dbManager->connect($_ENV);
 
-    // check if facebook_user_id is registered
-    $conditions_facebooks = array(
-        'wheres' => array(
-            'facebook_user_id' => $facebook_user_id,
-        ),
-    );
-    $facebooks_row = $dbManager->get('Facebooks')->fetchByConditions($conditions_facebooks);
-    if($facebooks_row) {
-        // authentication
-        $user_id = $facebooks_row['user_id'];
-        $conditions_users = array(
-            'wheres' => array(
-                'id' => $user_id,
-            ),
-        );
-        $authsecret = $redis->hGet("user:{$user_id}", 'auth');
-        if(! $authsecret) {
-            $authsecret = getrand();
-        }
-        $users_row = $dbManager->get('Users')->fetchByConditions($conditions_users);
-        $user = array_merge($users_row, array('auth' => $authsecret));
-        authorize($redis, $user);
-
-        // redirect to list page
-        redirectTo('/list');
-        exit;
-    }
-
-    // transaction
-    $dbManager->beginTransaction();
-
-    $delivery_time_default = getenv('DEFAULT_DELIVERY_TIME');
-    $timezone = $response_user_decodedBody['timezone'];
-    // Fix float value
-    $timezone = floor(intval($timezone));
-    $timezone_abs = abs($timezone);
-    $operator = '-';
-    if($timezone < 0) {
-        $operator = '+';
-    }
-    $dt = new DateTime("{$delivery_time_default} {$operator} {$timezone_abs} hours");
-    $delivery_time = $dt->format('H:i:s');
     $datetime_now = date('Y-m-d H:i:s');
-    $email = '';
-    if(isset($response_user_decodedBody['email'])) {
-        $email = $response_user_decodedBody['email'];
-    }
-
-    $values_users = array(
-        'email' => $email,
-        'locale' => $response_user_decodedBody['locale'],
-        'timezone' => $timezone,
-        'delivery_time' => $delivery_time,
-        'is_active' => 1,
-        'created_at' => $datetime_now,
-        'updated_at' => $datetime_now,
-    );
-
-    $user_id = false;
-    if(strlen($email)>0) {
-        $user_id = $dbManager->get('Users')->fetchByConditions([
-            'columns' => ['id'],
-            'wheres' => ['email' => $email],
-            'fetch_style' => PDO::FETCH_COLUMN,
-        ]);
-    }
-    if(! $user_id) {
-        // if user has not been created with account/password form
-        $dbManager->get('Users')->insert($values_users);
-        $user_id = $dbManager->getLastInsertId();
-    }
-
-    $values_facebooks = array(
-        'user_id' => $user_id,
-        'facebook_user_id' => $facebook_user_id,
-        'created_at' => $datetime_now,
-        'updated_at' => $datetime_now,
-    );
-    $dbManager->get('Facebooks')->insert($values_facebooks);
-
-    // authentication
-    $authsecret = getrand();
-    $user = array_merge(
-        array(
-            'id' => $user_id,
-            'auth' => $authsecret,
-        ),
-        $values_users
-    );
-    authorize($redis, $user);
 
     // get music data
     $response_music = $fb->get('/me/music?limit=1000');
     $response_music_decodedBody = $response_music->getDecodedBody();
     $music_sets = $response_music_decodedBody['data'];
     if(! isset($music_sets) || ! is_array($music_sets) || count($music_sets) === 0) {
-        // commit
-        $dbManager->commit();
-        // redirect to list page
-        redirectTo('/list');
+        redirectTo('/account');
         exit;
     }
 
@@ -155,6 +75,16 @@ try {
     $patterns_removing = getRemovingPatterns();
     $values_artists_users_sets = array();
     $inserted_artist_names = array();
+
+    $conditions_artists_users = [
+        'columns' => ['artist_id'],
+        'wheres' => ['user_id' => $user_id],
+        'fetch_style' => PDO::FETCH_COLUMN,
+    ];
+    $artist_ids_by_user = $dbManager->get('ArtistsUsers')->fetchAllByConditions($conditions_artists_users);
+
+    // transaction
+    $dbManager->beginTransaction();
 
     foreach($music_sets as $k_music_sets => $music_set) {
         // remove unnecessary words, strings
@@ -173,10 +103,13 @@ try {
                 continue 2;
             }
             // matched
-            $values_artists_users_sets[] = array(
-                'artist_id' => $artists_row['id'],
-                'user_id' => $user_id,
-            );
+            if(! in_array($artists_row['id'], $artist_ids_by_user)) {
+                $values_artists_users_sets[] = array(
+                    'artist_id' => $artists_row['id'],
+                    'user_id' => $user_id,
+                );
+            }
+
             // delete matched row
             unset($artists_rows[$k_artists_rows]);
             $inserted_artist_names[] = mb_strtolower($artists_row['name']);
@@ -211,7 +144,7 @@ try {
     // commit
     $dbManager->commit();
     // redirect to list page
-    redirectTo('/list');
+    redirectTo('/account');
     exit;
 
 } catch(Facebook\Exceptions\FacebookResponseException $e) {
@@ -248,28 +181,12 @@ function redirectTo($path)
     header("Location: {$scheme}://{$_SERVER['HTTP_HOST']}{$path}", true, 302);
 }
 
-function authorize($redis, $user=array())
-{
-    $ret = $redis->multi()
-        ->hMset("user:{$user['id']}", $user)
-        ->hSet('auths', $user['auth'], $user['id'])
-        ->exec();
-    setcookie("auth",$user['auth'],time()+3600*24*365);
-}
-
 function getRemovingPatterns()
 {
     return array(
         '{ \([^\)]*\)$}',
         '{ official$}i',
     );
-}
-
-function getrand() {
-    $fd = fopen("/dev/urandom","r");
-    $data = fread($fd,16);
-    fclose($fd);
-    return md5($data);
 }
 
 function renderErrorPage($message)
@@ -283,7 +200,7 @@ function renderErrorPage($message)
 </head>
 <body>
 <p>{$message}</p>
-<p><a href="/">back</a></p>
+<p><a href="/account">back</a></p>
 </body>
 </html>
 EOL;
