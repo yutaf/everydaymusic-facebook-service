@@ -158,14 +158,14 @@ try {
 
     foreach($music_sets as $k_music_sets => $music_set) {
         // remove unnecessary words, strings
-        $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
-        $artist_name_for_match = preg_replace('/^the /i', '', $artist_name);
+        $facebook_liked_artist = preg_replace($patterns_removing, '', $music_set['name']);
+        $facebook_liked_artist_for_match = preg_replace('/^the /i', '', $facebook_liked_artist);
 
         // Insert into artists table if the value does not exist in the table
         // Do not insert SAME NAME, CASE DIFFERENT data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
             $artist_row_name_for_match = preg_replace('/^the /i', '', $artists_row['name']);
-            if(stripos($artist_row_name_for_match, $artist_name_for_match) !== 0) {
+            if(stripos($artist_row_name_for_match, $facebook_liked_artist_for_match) !== 0) {
                 continue;
             }
             if(in_array(mb_strtolower($artists_row['name']), $inserted_artist_names)) {
@@ -185,18 +185,18 @@ try {
         }
 
         // insert new artist
-        if(in_array(mb_strtolower($artist_name), $inserted_artist_names)) {
+        if(in_array(mb_strtolower($facebook_liked_artist), $inserted_artist_names)) {
             // go to next data
             continue;
         }
 
         $values_artists = array(
-            'name' => $artist_name,
+            'name' => $facebook_liked_artist,
             'created_at' => $datetime_now,
             'updated_at' => $datetime_now,
         );
         $dbManager->get('Artists')->insert($values_artists);
-        $inserted_artist_names[] = mb_strtolower($artist_name);
+        $inserted_artist_names[] = mb_strtolower($facebook_liked_artist);
 
         $artist_id = $dbManager->getLastInsertId();
         $values_artists_users_sets[] = array(
