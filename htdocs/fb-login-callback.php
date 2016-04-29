@@ -159,11 +159,13 @@ try {
     foreach($music_sets as $k_music_sets => $music_set) {
         // remove unnecessary words, strings
         $artist_name = preg_replace($patterns_removing, '', $music_set['name']);
+        $artist_name_for_match = preg_replace('/^the /i', '', $artist_name);
 
         // Insert into artists table if the value does not exist in the table
         // Do not insert SAME NAME, CASE DIFFERENT data.
         foreach($artists_rows as $k_artists_rows => $artists_row) {
-            if(stripos($artist_name, $artists_row['name']) === false) {
+            $artist_row_name_for_match = preg_replace('/^the /i', '', $artists_row['name']);
+            if(stripos($artist_row_name_for_match, $artist_name_for_match) !== 0) {
                 continue;
             }
             if(in_array(mb_strtolower($artists_row['name']), $inserted_artist_names)) {
