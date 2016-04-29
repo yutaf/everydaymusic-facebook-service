@@ -138,8 +138,10 @@ try {
         );
     }
 
-    // insert into artists_users
-    $dbManager->get('ArtistsUsers')->insertMultipleRows($values_artists_users_sets);
+    if(count($values_artists_users_sets)>0) {
+        // insert into artists_users
+        $dbManager->get('ArtistsUsers')->insertMultipleRows($values_artists_users_sets);
+    }
 
     // commit
     $dbManager->commit();
