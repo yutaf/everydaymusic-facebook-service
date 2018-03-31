@@ -68,6 +68,9 @@ try {
             $authsecret = getrand();
         }
         $users_row = $dbManager->get('Users')->fetchByConditions($conditions_users);
+        if($users_row === false) {
+            throw new Exception("Error: Cannto find the user. user_id: {$user_id}");
+        }
         $user = array_merge($users_row, array('auth' => $authsecret));
         authorize($redis, $user);
 
