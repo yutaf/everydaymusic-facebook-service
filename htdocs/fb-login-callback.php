@@ -240,9 +240,13 @@ try {
     renderErrorPage($message);
     exit;
 } catch(Exception $e) {
-    $message = 'Error: ' . $e->getMessage();
+    $message = $e->getMessage();
     $trace = end($e->getTrace());
-    $log->addWarning($message, $trace);
+    if($trace === false) {
+      $log->addWarning($message, array($e));
+    } else {
+      $log->addWarning($message, $trace);
+    }
     renderErrorPage($message);
     exit;
 }
